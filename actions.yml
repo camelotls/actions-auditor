@@ -1,0 +1,10 @@
+name: "npm audit"
+description: "Runs npm audit for the production dependencies of the uk-mobile repo"
+outputs:
+    npm_audit:
+        description: "Result of 'npm audit --production' command on the root"
+    npm_audit_json:
+        description: "Result of 'npm audit --production --json' command on the root"
+runs:
+    using: "docker"
+    image: "Dockerfile"
