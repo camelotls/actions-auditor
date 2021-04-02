@@ -1,4 +1,4 @@
-# npm Audit GitHub Action
+# Audit GitHub Action
 
 ## Workflow Status
 ![Build Status](https://github.com/camelotls/actions-npm-audit/workflows/Lint%20Code%20Base/badge.svg)
@@ -6,17 +6,19 @@
 ![Build Status](https://github.com/camelotls/actions-npm-audit/workflows/CodeQL/badge.svg)
 
 ## Action description
-This action executes `npm audit` for a given repo and outputs the result either in a text or a JSON format. The latter can be used as an input to repporting tools such as the [Jira Integration Action](https://github.com/camelotls/actions-jira-integration).
+This action executes any audit command for a given repo and outputs the result either in JSON format. The output can be used as an input to reporting tools such as the [Jira Integration Action](https://github.com/camelotls/actions-jira-integration).
 
 ## Usage
 ### Inputs
-N/A
+|Variable|Required|Description|
+|:--:|:--:|:--:|
+|AUDIT_COMMAND|true|The audit command to run in a given repo|
+|JSON_DRILLER|true|The JSON key chain formatting the final audit_command_output value|
 
 ### Outputs
 |Variable|Description|
 |:--:|:--:|
-|npm_audit|Result of 'npm audit --production' command on the root.|
-|npm_audit_json|Result of 'npm audit --production --json' command on the root|
+|audit_command_output|Result of the execution of the input audit command on the root|
 
 ## Example workflow
 To use this action in your workflow you can have a look at the following sample workflow integrating it:
@@ -47,18 +49,34 @@ jobs:
               uses: actions/setup-node@v1
               with:
                 node-version: 12.x
-            - name: Prepare files
-              run: |
-                cp package.json ${GITHUB_WORKSPACE}/.github/actions/npm-audit/package-root.json
-                cp package-lock.json ${GITHUB_WORKSPACE}/.github/actions/npm-audit/package-lock-root.json
-            - name: Execute npm audit
+            - name: Checkout npm audit repo
+              uses: actions/checkout@v2
+              with:
+                repository: camelotls/actions-npm-audit
+                ref: v1.0.0
+                token: ${{ secrets.MACHINEUSER_GITHUB_TOKEN }}
+                path: actions-npm-audit
+            -  name: Prepare files
+               run: |
+                    cp package.json ${GITHUB_WORKSPACE}/actions-npm-audit/package-root.json
+                    cp package-lock.json ${GITHUB_WORKSPACE}/actions-npm-audit/package-lock-root.json
+            - name: Run npm Audit
               id: npm_audit
-              uses: ./.github/actions/npm-audit
+              uses: ./actions-npm-audit/
+              with:
+                AUDIT_COMMAND: 'npm audit --production --json'
+                JSON_DRILLER: 'advisories'
+            - name: Create a comment on a PR
+              if: ${{ always() }}
+              uses: ./.github/actions/pull-request-commenter
+              with:
+                MACHINEUSER_GITHUB_TOKEN: ${{ secrets.MACHINEUSER_GITHUB_TOKEN }}
+                NPM_AUDIT: ${{ steps.npm_audit.outputs.audit_command_output }}
             -  name: Checkout Jira integration GitHub Action Repo
                uses: actions/checkout@v2
                with:
                 repository: camelotls/actions-jira-integration
-                ref: v1.3.0
+                ref: v1.4.1
                 token: ${{ secrets.MACHINEUSER_GITHUB_TOKEN }}
                 path: actions-jira-integration
             -  name: Jira ticket creation
@@ -67,7 +85,7 @@ jobs:
                with:
                   JIRA_USER: ${{ secrets.JIRA_USER }}
                   JIRA_PASSWORD: ${{ secrets.JIRA_PASSWORD }}
-                  INPUT_JSON: ${{ steps.npm_audit.outputs.npm_audit_json }}
+                  INPUT_JSON: ${{ steps.npm_audit.outputs.audit_command_output }}
                   JIRA_PROJECT: MBIL
                   JIRA_URI: 'jira.camelot.global'
                   REPORT_INPUT_KEYS: |
@@ -82,6 +100,7 @@ jobs:
                                           high: P2
                                           moderate: P3
                                           low: P4
+                  ISSUE_LABELS_MAPPER: 'Security,Triaged,npm_audit_check'
             - name: Get actions' user id
               id: get_uid
               run: |
