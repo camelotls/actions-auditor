@@ -1,10 +1,15 @@
 name: "npm audit"
 description: "Runs npm audit for the production dependencies of the uk-mobile repo"
+inputs:
+    AUDIT_COMMAND:
+        description: "The audit command to run in a given repo"
+        required: true
+    JSON_DRILLER:
+        description: "The JSON key chain formatting the final audit_command_output value"
+        required: true
 outputs:
-    npm_audit:
-        description: "Result of 'npm audit --production' command on the root"
-    npm_audit_json:
-        description: "Result of 'npm audit --production --json' command on the root"
+    audit_command_output:
+        description: "Result of the input command supplied in AUDIT_COMMAND"
 runs:
     using: "docker"
     image: "Dockerfile"

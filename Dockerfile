@@ -1,5 +1,9 @@
 FROM node:12.9.0
 
+WORKDIR /
+
+ENV ACTION_NAME='./actions-npm-audit/'
+
 COPY index.js .
 COPY package.json .
 COPY package-lock.json .

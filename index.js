@@ -2,63 +2,53 @@ const core = require('@actions/core');
 const shell = require('shelljs');
 const { readdirSync, rename } = require('fs');
 
-const MOUNTED_GITHUB_WORKSPACE = process.env.GITHUB_WORKSPACE;
-const NPM_AUDIT_FOLDER_PATH = '.github/actions/npm-audit/';
-
-const childProcessExecute = (command) => {
-  console.log(`Attempting to execute ${command}...`);
-  let npmAuditOutput = '';
-  const { stdout, stderr } = shell.exec(command);
-
-  if (stdout) {
-    npmAuditOutput = stdout;
-  } else if (stderr) {
-    npmAuditOutput = stderr;
-  }
-
-  /*
-     * We need to set 2 outputs:
-     * - npm_audit_json: will be used by the jira-integration job
-     * - npm_audit: will be used by the pull-request-commenter job
-     */
-  if (command.includes('json')) {
-    core.setOutput('npm_audit_json', JSON.parse(npmAuditOutput).advisories);
-  } else {
-    core.setOutput('npm_audit', npmAuditOutput);
-  }
-};
+const AUDIT_COMMAND = core.getInput('AUDIT_COMMAND');
+const JSON_DRILLER = core.getInput('JSON_DRILLER');
 
 const cleanUpEnvironment = () => {
-  // change the directory in order to properly run the npm audit
-  shell.cd(NPM_AUDIT_FOLDER_PATH);
+  // change the directory in order to properly run the audit command
+  shell.cd(`${process.env.GITHUB_WORKSPACE}/${process.env.ACTION_NAME}`);
 
   const files = readdirSync(__dirname);
 
-  // rename the npm-audit specific files
+  // rename the audit-specific files
   const nonRootFilteredFiles = files.filter(
     (file) => file.includes('package') && !file.includes('root')
   );
-  nonRootFilteredFiles.forEach((file) => rename(file, `${file}_npm`, (err) => console.log(err)));
+  nonRootFilteredFiles.forEach((file) => rename(file, `${file}_audit`, (err) => console.log(err)));
 
   // rename the root related packages
   console.log('Renaming the root related package files...');
   const rootFilteredFiles = files.filter(
     (file) => file.includes('package') && file.includes('root')
   );
+
   rootFilteredFiles.forEach((file) =>
     rename(file, file.replace('-root', ''), (err) => console.log(err))
   );
 };
 
-const npmAuditRunner = () => {
-  const npmAuditBashCommand = 'npm audit --production';
-  const npmAuditJsonBashCommand = 'npm audit --production --json';
-
-  // call the clean up function in order to prepare the package related files for npm audit to run based on the repo root
+const actionRunner = (AUDIT_COMMAND) => {
+  console.log('Prepare the container for the audit...');
   cleanUpEnvironment();
 
-  childProcessExecute(npmAuditBashCommand, MOUNTED_GITHUB_WORKSPACE);
-  childProcessExecute(npmAuditJsonBashCommand, MOUNTED_GITHUB_WORKSPACE);
+  console.log(`Attempting to execute ${AUDIT_COMMAND}...`);
+  let auditCommandOutput = '';
+  const auditCommand = AUDIT_COMMAND;
+
+  const { stdout, stderr } = shell.exec(auditCommand);
+
+  if (stdout) {
+    console.log('Command executed successfully!');
+    auditCommandOutput = stdout;
+  } else if (stderr) {
+    console.log(`Command execution encountered the following error: ${stderr}`);
+    auditCommandOutput = stderr;
+  }
+
+  core.setOutput('audit_command_output', JSON.parse(auditCommandOutput)[JSON_DRILLER]);
 };
 
-npmAuditRunner();
+(async () => {
+  actionRunner(AUDIT_COMMAND);
+})();
