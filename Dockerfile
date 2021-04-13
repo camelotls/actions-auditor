@@ -8,7 +8,7 @@ COPY index.js .
 COPY package.json .
 COPY package-lock.json .
 COPY package-root.json .
-COPY package-lock-root.json .
+COPY yarn-root.lock .
 
 RUN npm install
 

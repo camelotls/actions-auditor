@@ -20,7 +20,7 @@ const cleanUpEnvironment = () => {
   // rename the root related packages
   console.log('Renaming the root related package files...');
   const rootFilteredFiles = files.filter(
-    (file) => file.includes('package') && file.includes('root')
+    (file) => file.includes('yarn') && file.includes('root')
   );
 
   rootFilteredFiles.forEach((file) =>
