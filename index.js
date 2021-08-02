@@ -1,54 +1,63 @@
 const core = require('@actions/core');
-const shell = require('shelljs');
-const { readdirSync, rename } = require('fs');
+const fs = require('fs');
+const jsonParser = require('./utils/jsonParserFactory');
+const { v4 } = require('uuid');
+const _ = require('lodash');
+const jsonXform  = require('@perpk/json-xform');
+const util = require('util');
+const bunyan = require('bunyan');
 
-const AUDIT_COMMAND = core.getInput('AUDIT_COMMAND');
-const JSON_DRILLER = core.getInput('JSON_DRILLER');
+const REPORT_INPUT = process.env.REPORT_INPUT;
+const AUDIT_TOOL = process.env.AUDIT_TOOL;
+let auditReportFlattened;
 
-const cleanUpEnvironment = () => {
-  // change the directory in order to properly run the audit command
-  shell.cd(`${process.env.GITHUB_WORKSPACE}/${process.env.ACTION_NAME}`);
+// console.log(util.inspect(jsonXform.mapWithTemplate(`owasp-report.json`, 'templateMappers/owasp-template-mapper.json')), false, null,true);
 
-  const files = readdirSync(__dirname);
+try {
+    fs.writeFileSync(`tmp-${AUDIT_TOOL}-report.json`, REPORT_INPUT, 'utf8');
+} catch(e) {
+    log.warn(e);
+}
 
-  // rename the audit-specific files
-  const nonRootFilteredFiles = files.filter(
-    (file) => file.includes('package') && !file.includes('root')
-  );
-  nonRootFilteredFiles.forEach((file) => rename(file, `${file}_audit`, (err) => console.log(err)));
+if(AUDIT_TOOL === 'npm') {
+    console.log('No template mapper for npm is needed...');
+} else {
+    const auditMapper = `templateMappers/${AUDIT_TOOL}-template-mapper.json`;
+      auditReportFlattened = jsonXform.mapWithTemplate(`tmp-${AUDIT_TOOL}-report.json`, auditMapper);
 
-  // rename the root related packages
-  console.log('Renaming the root related package files...');
-  const rootFilteredFiles = files.filter(
-    (file) => file.includes('package') && file.includes('root')
-  );
+}
 
-  rootFilteredFiles.forEach((file) =>
-    rename(file, file.replace('-root', ''), (err) => console.log(err))
-  );
-};
+ const startAction = () => {
+    let preprocessedReport = {};
+    let singleIssueData;
 
-const actionRunner = (AUDIT_COMMAND) => {
-  console.log('Prepare the container for the audit...');
-  cleanUpEnvironment();
+    switch (AUDIT_TOOL) {
+        case 'owasp':
+            auditReportFlattened['site'].forEach((flattenedIssue) => {
+                flattenedIssue['alerts'].forEach((issue) => {
+                    const uuid = v4().toString();
+                    singleIssueData = {
+                        [uuid]: {
+                            name: issue.name || '',
+                            desc: issue.desc || '',
+                            riskdesc: issue.riskdesc || '',
+                            reference: issue.reference || '',
+                            solution: issue.solution || '',
+                        }
+                    };
+                });
+            });
+            Object.assign(preprocessedReport, singleIssueData);
+            break;
+        case 'npm':
+             preprocessedReport = JSON.parse(REPORT_INPUT).advisories;
+            break;
+    }
 
-  console.log(`Attempting to execute ${AUDIT_COMMAND}...`);
-  let auditCommandOutput = '';
-  const auditCommand = AUDIT_COMMAND;
-
-  const { stdout, stderr } = shell.exec(auditCommand);
-
-  if (stdout) {
-    console.log('Command executed successfully!');
-    auditCommandOutput = stdout;
-  } else if (stderr) {
-    console.log(`Command execution encountered the following error: ${stderr}`);
-    auditCommandOutput = stderr;
-  }
-
-  core.setOutput('audit_command_output', JSON.parse(auditCommandOutput)[JSON_DRILLER]);
+    // core.setOutput('auditReport', preprocessedReport);
+    console.log(preprocessedReport);
 };
 
 (async () => {
-  actionRunner(AUDIT_COMMAND);
+    startAction();
 })();
