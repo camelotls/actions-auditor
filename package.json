@@ -21,7 +21,8 @@
     "lodash": "4.17.21",
     "fs": "0.0.1-security",
     "shelljs": "^0.8.4",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "dirty-json": "0.9.2"
   },
   "dependencies": {
     "@perpk/json-xform": "1.0.0-beta.2"

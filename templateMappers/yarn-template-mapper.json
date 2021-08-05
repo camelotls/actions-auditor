@@ -2,30 +2,32 @@
   "fieldset": [
     {
       "fromEach": {
-        "field": "site",
+        "field": "dataSet",
         "fieldset": [
-          {
-            "fromEach": {
-              "field": "alerts",
-              "fieldset": [
                 {
-                  "from": "solution"
+                  "from": "data.advisory.severity",
+                  "to": "severity"
                 },
                 {
-                  "from": "reference"
+                  "from": "data.advisory.title",
+                  "to": "title"
                 },
                 {
-                  "from": "riskdesc"
+                  "from": "data.advisory.module_name",
+                  "to": "module_name"
                 },
                 {
-                  "from": "desc"
+                  "from": "data.advisory.recommendation",
+                  "to": "recommendation"
                 },
                 {
-                  "from": "name"
+                  "from": "data.advisory.references",
+                  "to": "references"
+                },
+                {
+                  "from": "data.advisory.overview",
+                  "to": "overview"
                 }
-              ]
-            }
-          }
         ]
       }
     }

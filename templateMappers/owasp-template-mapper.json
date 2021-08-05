@@ -3,7 +3,7 @@
     {
       "fromEach": {
         "field": "site",
-        "flatten": true,
+        "flatten":true,
         "fieldset": [
           {
             "fromEach": {
