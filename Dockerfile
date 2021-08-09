@@ -5,6 +5,7 @@ WORKDIR /
 ENV ACTION_NAME='./actions-npm-audit/'
 
 COPY index.js .
+COPY utils/ ./utils
 COPY package.json .
 COPY package-lock.json .
 COPY package-root.json .

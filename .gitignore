@@ -9,3 +9,8 @@ node_modules/
 
 #.DS_Store
 .DS_Store
+
+# Reports
+tmp-npm-report.json
+tmp-owasp-report.json
+tmp-yarn-report.json
