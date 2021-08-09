@@ -6,8 +6,8 @@ const bunyan = require('bunyan');
 const dirtyJSON = require('dirty-json');
 const log = bunyan.createLogger({ name: 'actions-audit' });
 const { preprocessYarnReport } = require('./utils/helpers');
-const REPORT_INPUT = process.env.REPORT_INPUT;
-const AUDIT_TOOL = process.env.AUDIT_TOOL;
+const REPORT_INPUT = core.getInput('AUDIT_TOOL') || process.env.REPORT_INPUT;
+const AUDIT_TOOL = core.getInput('AUDIT_TOOL') || process.env.AUDIT_TOOL;
 let auditReportFlattened;
 
 try {
