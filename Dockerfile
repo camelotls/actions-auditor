@@ -6,6 +6,7 @@ ENV ACTION_NAME='./actions-npm-audit/'
 
 COPY index.js .
 COPY utils/ ./utils
+COPY templateMappers/ ./templateMappers
 COPY package.json .
 COPY package-lock.json .
 
