@@ -10,6 +10,7 @@ const REPORT_INPUT = core.getInput('REPORT_INPUT') || process.env.REPORT_INPUT;
 const AUDIT_TOOL = core.getInput('AUDIT_TOOL') || process.env.AUDIT_TOOL;
 let auditReportFlattened;
 
+
 try {
   if (AUDIT_TOOL === 'yarn') {
     const dataSet = preprocessYarnReport(REPORT_INPUT);
