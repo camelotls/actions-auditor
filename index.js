@@ -75,8 +75,8 @@ const startAction = () => {
         Object.assign(preprocessedReport, singleIssueData);
       });
   }
-     // core.setOutput('auditReport', JSON.stringify(preprocessedReport));
-    console.log(JSON.stringify(preprocessedReport));
+      core.setOutput('auditReport', JSON.stringify(preprocessedReport));
+    // console.log(JSON.stringify(preprocessedReport));
 };
 
 (async () => {
