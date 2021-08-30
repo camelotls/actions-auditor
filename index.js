@@ -5,15 +5,20 @@ const jsonXform = require('@perpk/json-xform');
 const bunyan = require('bunyan');
 const dirtyJSON = require('dirty-json');
 const log = bunyan.createLogger({ name: 'actions-audit' });
-const { preprocessYarnReport } = require('./utils/helpers');
-const REPORT_INPUT = core.getInput('REPORT_INPUT') || process.env.REPORT_INPUT;
-const AUDIT_TOOL = core.getInput('AUDIT_TOOL') || process.env.AUDIT_TOOL;
+const { preprocessYarnReport, preprocessOwaspReport } = require('./utils/helpers');
+const REPORT_INPUT =  process.env.REPORT_INPUT;
+const AUDIT_TOOL =  process.env.AUDIT_TOOL;
 let auditReportFlattened;
+
+
 
 try {
   if (AUDIT_TOOL === 'yarn') {
     const dataSet = preprocessYarnReport(REPORT_INPUT);
     fs.writeFileSync(`tmp-${AUDIT_TOOL}-report.json`, dataSet, 'utf8');
+  } else if (AUDIT_TOOL === 'owasp') {
+    const report = preprocessOwaspReport(REPORT_INPUT);
+    fs.writeFileSync(`tmp-${AUDIT_TOOL}-report.json`, report, 'utf8');
   } else {
     fs.writeFileSync(`tmp-${AUDIT_TOOL}-report.json`, REPORT_INPUT, 'utf8');
   }

@@ -6,4 +6,9 @@ function preprocessYarnReport(inputFile) {
   const finalReport = '{"dataSet":'.concat(JSON.stringify(filteredReport)).concat('}');
   return finalReport;
 }
-module.exports = { preprocessYarnReport };
+
+function preprocessOwaspReport(inputFile) {
+  const report = inputFile.replace(/<.+?>/g ,'');
+  return report;
+}
+module.exports = { preprocessYarnReport, preprocessOwaspReport };
