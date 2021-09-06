@@ -30,11 +30,11 @@ if (AUDIT_TOOL === 'npm') {
   console.log('No template mapper for npm is needed');
 } else if ((AUDIT_TOOL === 'yarn')) {
   console.log("The template mapper for yarn will be used")
-  const auditMapper = `templateMappers/${AUDIT_TOOL}-template-mapper.json`;
+  const auditMapper = `./actions-npm-audit/templateMappers/${AUDIT_TOOL}-template-mapper.json`;
   auditReportFlattened = jsonXform.mapWithTemplate(`tmp-${AUDIT_TOOL}-report.json`, auditMapper);
 } else {
   console.log("The template mapper for owasp will be used")
-  const auditMapper = `templateMappers/${AUDIT_TOOL}-template-mapper.json`;
+  const auditMapper = `./actions-npm-audit/templateMappers/${AUDIT_TOOL}-template-mapper.json`;
   auditReportFlattened = jsonXform.mapWithTemplate(`tmp-${AUDIT_TOOL}-report.json`, auditMapper);
 }
 
