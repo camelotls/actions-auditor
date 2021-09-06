@@ -3,7 +3,6 @@ const fs = require('fs');
 const { v4 } = require('uuid');
 const jsonXform = require('@perpk/json-xform');
 const bunyan = require('bunyan');
-const dirtyJSON = require('dirty-json');
 const log = bunyan.createLogger({ name: 'actions-audit' });
 const { preprocessYarnReport, preprocessOwaspReport } = require('./utils/helpers');
 const REPORT_INPUT = core.getInput('REPORT_INPUT') || process.env.REPORT_INPUT;
@@ -13,10 +12,7 @@ let auditReportFlattened;
 const tempReportInputFile = fs.readFileSync(REPORT_INPUT, "utf8");
 
 try {
-  if (AUDIT_TOOL === 'yarn') {
-    const dataSet = preprocessYarnReport(tempReportInputFile);
-    fs.writeFileSync(`tmp-${AUDIT_TOOL}-report.json`, dataSet, 'utf8');
-  } else if (AUDIT_TOOL === 'owasp') {
+    if (AUDIT_TOOL === 'owasp') {
     const report = preprocessOwaspReport(tempReportInputFile);
     fs.writeFileSync(`tmp-${AUDIT_TOOL}-report.json`, report, 'utf8');
   } else {
@@ -28,11 +24,7 @@ try {
 
 if (AUDIT_TOOL === 'npm') {
   console.log('No template mapper for npm is needed');
-} else if ((AUDIT_TOOL === 'yarn')) {
-  console.log("The template mapper for yarn will be used")
-  const auditMapper = `./actions-npm-audit/templateMappers/${AUDIT_TOOL}-template-mapper.json`;
-  auditReportFlattened = jsonXform.mapWithTemplate(`tmp-${AUDIT_TOOL}-report.json`, auditMapper);
-} else {
+}  else {
   console.log("The template mapper for owasp will be used")
   const auditMapper = `./actions-npm-audit/templateMappers/${AUDIT_TOOL}-template-mapper.json`;
   auditReportFlattened = jsonXform.mapWithTemplate(`tmp-${AUDIT_TOOL}-report.json`, auditMapper);
@@ -60,22 +52,6 @@ const startAction = () => {
       break;
     case 'npm':
       preprocessedReport = JSON.parse(REPORT_INPUT).advisories;
-      break;
-    case 'yarn':
-      auditReportFlattened.dataSet.forEach((issue) => {
-        const uuid = v4().toString();
-        singleIssueData = {
-          [uuid]: {
-            title: issue.title || '',
-            module_name: issue.module_name || '',
-            overview: issue.overview || '',
-            recommendation: issue.recommendation || '',
-            references: issue.references || '',
-            severity: issue.severity || ''
-          }
-        };
-        Object.assign(preprocessedReport, singleIssueData);
-      });
   }
        core.setOutput('auditReport', JSON.stringify(preprocessedReport));
 };
