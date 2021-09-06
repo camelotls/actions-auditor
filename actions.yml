@@ -2,7 +2,7 @@ name: "npm audit"
 description: "Runs npm audit for the production dependencies of the uk-mobile repo"
 inputs:
     REPORT_INPUT:
-        description: "The report that will be processed"
+        description: "The path where report is located"
         required: true
     AUDIT_TOOL:
         description: "The audit tool"
