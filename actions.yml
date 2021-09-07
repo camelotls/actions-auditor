@@ -1,11 +1,11 @@
-name: "npm audit"
+name: "audit checker"
 description: "Runs audit checks of npm audit and owasp-zap reports"
 inputs:
     REPORT_INPUT:
-        description: "The path where report is located"
+        description: "The path where audit report is located."
         required: true
     AUDIT_TOOL:
-        description: "The audit tool"
+        description: "The audit tool that will be used."
         required: true
 outputs:
     audit_command_output:
