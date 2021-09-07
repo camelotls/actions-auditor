@@ -1,5 +1,5 @@
 name: "npm audit"
-description: "Runs npm audit for the production dependencies of the uk-mobile repo"
+description: "Runs audit checks of npm audit and owasp-zap reports"
 inputs:
     REPORT_INPUT:
         description: "The path where report is located"

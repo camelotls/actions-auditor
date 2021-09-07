@@ -1,5 +1,5 @@
-function preprocessOwaspReport(inputFile) {
-  const report = inputFile.replace(/<.+?>/g ,'');
+function preprocessOwaspReport (inputFile) {
+  const report = inputFile.replace(/<.+?>/g, '');
   return report;
 }
-module.exports = {  preprocessOwaspReport };
+module.exports = { preprocessOwaspReport };
