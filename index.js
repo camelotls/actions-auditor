@@ -6,7 +6,7 @@ const log = bunyan.createLogger({ name: 'actions-audit' });
 
 const jsonXform = require('@perpk/json-xform');
 const { preprocessOwaspReport } = require('./utils/helpers');
-const { TEMPLATE_MAPPER, AUDIT_TOOL_REPORT } = require('utils/enums');
+const { TEMPLATE_MAPPER, AUDIT_TOOL_REPORT } = require('./utils/enums');
 
 const REPORT_INPUT = core.getInput('REPORT_INPUT') || process.env.REPORT_INPUT;
 const AUDIT_TOOL = core.getInput('AUDIT_TOOL') || process.env.AUDIT_TOOL;
