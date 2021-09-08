@@ -1,0 +1,34 @@
+{
+  "fieldset": [
+    {
+      "fromEach": {
+        "field": "site",
+        "flatten":true,
+        "fieldset": [
+          {
+            "fromEach": {
+              "field": "alerts",
+              "fieldset": [
+                {
+                  "from": "solution"
+                },
+                {
+                  "from": "reference"
+                },
+                {
+                  "from": "riskdesc"
+                },
+                {
+                  "from": "desc"
+                },
+                {
+                  "from": "name"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

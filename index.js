@@ -1,54 +1,59 @@
 const core = require('@actions/core');
-const shell = require('shelljs');
-const { readdirSync, rename } = require('fs');
+const fs = require('fs');
+const { v4 } = require('uuid');
+const bunyan = require('bunyan');
+const log = bunyan.createLogger({ name: 'actions-audit' });
 
-const AUDIT_COMMAND = core.getInput('AUDIT_COMMAND');
-const JSON_DRILLER = core.getInput('JSON_DRILLER');
+const jsonXform = require('@perpk/json-xform');
+const { preprocessOwaspReport } = require('./utils/helpers');
+const { TEMPLATE_MAPPER, AUDIT_TOOL_REPORT } = require('./utils/enums');
 
-const cleanUpEnvironment = () => {
-  // change the directory in order to properly run the audit command
-  shell.cd(`${process.env.GITHUB_WORKSPACE}/${process.env.ACTION_NAME}`);
+const REPORT_INPUT = core.getInput('REPORT_INPUT') || process.env.REPORT_INPUT;
+const AUDIT_TOOL = core.getInput('AUDIT_TOOL') || process.env.AUDIT_TOOL;
 
-  const files = readdirSync(__dirname);
+let auditReportFlattened;
 
-  // rename the audit-specific files
-  const nonRootFilteredFiles = files.filter(
-    (file) => file.includes('package') && !file.includes('root')
-  );
-  nonRootFilteredFiles.forEach((file) => rename(file, `${file}_audit`, (err) => console.log(err)));
+const tempReportInputFile = fs.readFileSync(REPORT_INPUT, 'utf8');
 
-  // rename the root related packages
-  console.log('Renaming the root related package files...');
-  const rootFilteredFiles = files.filter(
-    (file) => file.includes('package') && file.includes('root')
-  );
+try {
+  const report = (AUDIT_TOOL === AUDIT_TOOL_REPORT.owasp) ? preprocessOwaspReport(tempReportInputFile) : tempReportInputFile;
+  fs.writeFileSync(`tmp-${AUDIT_TOOL}-report.json`, report, 'utf8');
+} catch (e) {
+  log.warn(e);
+}
 
-  rootFilteredFiles.forEach((file) =>
-    rename(file, file.replace('-root', ''), (err) => console.log(err))
-  );
-};
+if (AUDIT_TOOL === AUDIT_TOOL_REPORT.owasp) {
+  log.info('The template mapper for owasp will be used');
+  const auditMapper = `${TEMPLATE_MAPPER.path}/${AUDIT_TOOL}-template-mapper.json`;
+  auditReportFlattened = jsonXform.mapWithTemplate(`tmp-${AUDIT_TOOL}-report.json`, auditMapper);
+}
 
-const actionRunner = (AUDIT_COMMAND) => {
-  console.log('Prepare the container for the audit...');
-  cleanUpEnvironment();
+const startAction = () => {
+  let preprocessedReport = {};
+  let singleIssueData;
 
-  console.log(`Attempting to execute ${AUDIT_COMMAND}...`);
-  let auditCommandOutput = '';
-  const auditCommand = AUDIT_COMMAND;
-
-  const { stdout, stderr } = shell.exec(auditCommand);
-
-  if (stdout) {
-    console.log('Command executed successfully!');
-    auditCommandOutput = stdout;
-  } else if (stderr) {
-    console.log(`Command execution encountered the following error: ${stderr}`);
-    auditCommandOutput = stderr;
+  switch (AUDIT_TOOL) {
+    case AUDIT_TOOL_REPORT.owasp:
+      auditReportFlattened.site.forEach((issue) => {
+        const uuid = v4().toString();
+        singleIssueData = {
+          [uuid]: {
+            name: issue.name || '',
+            desc: issue.desc || '',
+            riskdesc: issue.riskdesc || '',
+            reference: issue.reference || '',
+            solution: issue.solution || ''
+          }
+        };
+        Object.assign(preprocessedReport, singleIssueData);
+      });
+      break;
+    case AUDIT_TOOL_REPORT.npm:
+      preprocessedReport = JSON.parse(tempReportInputFile).advisories;
   }
-
-  core.setOutput('audit_command_output', JSON.parse(auditCommandOutput)[JSON_DRILLER]);
+  core.setOutput('auditReport', JSON.stringify(preprocessedReport));
 };
 
 (async () => {
-  actionRunner(AUDIT_COMMAND);
+  startAction();
 })();

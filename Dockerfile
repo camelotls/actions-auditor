@@ -2,13 +2,16 @@ FROM node:12.9.0
 
 WORKDIR /
 
+ARG REPORT_INPUT
+
 ENV ACTION_NAME='./actions-npm-audit/'
 
+COPY $REPORT_INPUT .
 COPY index.js .
+COPY utils/ ./utils
+COPY templateMappers/ ./templateMappers
 COPY package.json .
 COPY package-lock.json .
-COPY package-root.json .
-COPY package-lock-root.json .
 
 RUN npm install
 
