@@ -49,7 +49,7 @@ const startAction = () => {
       });
       break;
     case AUDIT_TOOL_REPORT.npm:
-      preprocessedReport = JSON.parse(REPORT_INPUT).advisories;
+      preprocessedReport = JSON.parse(tempReportInputFile).advisories;
   }
   core.setOutput('auditReport', JSON.stringify(preprocessedReport));
 };
