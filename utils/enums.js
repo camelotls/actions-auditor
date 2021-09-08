@@ -1,8 +1,10 @@
-export const AUDIT_TOOL_REPORT = {
+const AUDIT_TOOL_REPORT = {
   owasp: 'owasp',
   npm: 'npm'
 };
 
-export const TEMPLATE_MAPPER = {
+const TEMPLATE_MAPPER = {
   path: './actions-npm-audit/templateMappers'
 };
+
+module.exports = { AUDIT_TOOL_REPORT, TEMPLATE_MAPPER };
