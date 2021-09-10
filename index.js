@@ -36,10 +36,13 @@ const startAction = () => {
     case AUDIT_TOOL_REPORT.owasp:
       auditReportFlattened.site.forEach((issue) => {
         const uuid = v4().toString();
+        let urls = [];
+        issue.instances.forEach((instance) =>{ urls.push(instance.uri)});
         singleIssueData = {
           [uuid]: {
             name: issue.name || '',
             desc: issue.desc || '',
+            uri: urls,
             riskdesc: issue.riskdesc || '',
             reference: issue.reference || '',
             solution: issue.solution || ''
