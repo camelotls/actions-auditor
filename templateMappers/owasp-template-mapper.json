@@ -23,6 +23,16 @@
                 },
                 {
                   "from": "name"
+                },
+                {
+                 "fromEach": {
+                    "field": "instances",
+                    "fieldset": [
+                      {
+                        "from": "uri"
+                      }
+                    ]
+                  }
                 }
               ]
             }
