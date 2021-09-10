@@ -37,7 +37,7 @@ const startAction = () => {
       auditReportFlattened.site.forEach((issue) => {
         const uuid = v4().toString();
         const urls = [];
-        issue.instances.forEach((instance) => { urls.push(instance.uri) });
+        issue.instances.forEach((instance) => { urls.push(instance.uri); });
         singleIssueData = {
           [uuid]: {
             name: issue.name || '',
