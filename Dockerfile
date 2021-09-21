@@ -4,7 +4,7 @@ WORKDIR /
 
 ARG REPORT_INPUT
 
-ENV ACTION_NAME='./actions-npm-audit/'
+ENV ACTION_NAME='./actions-auditor/'
 
 COPY $REPORT_INPUT .
 COPY index.js .
