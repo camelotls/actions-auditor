@@ -61,13 +61,6 @@ jobs:
         if: always()
         run: npm audit --production --json > audit.json
 
-      - name: Upload NPM audit report to GH Artifact
-        if: always()
-        uses: actions/upload-artifact@v2.2.4
-        with:
-          name: "NPM_Audit_Mobile_Report.zip"
-          path: |
-            ./audit.json
       - name: Checkout auditor
         if: always()
         uses: actions/checkout@v2
