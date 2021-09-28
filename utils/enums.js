@@ -4,7 +4,7 @@ const AUDIT_TOOL_REPORT = {
 };
 
 const TEMPLATE_MAPPER = {
-  path: './actions-npm-audit/templateMappers'
+  path: './actions-auditor/templateMappers'
 };
 
 module.exports = { AUDIT_TOOL_REPORT, TEMPLATE_MAPPER };
