@@ -54,7 +54,12 @@ const startAction = () => {
     case AUDIT_TOOL_REPORT.npm:
       preprocessedReport = JSON.parse(tempReportInputFile).advisories;
   }
-  core.setOutput('auditReport', JSON.stringify(preprocessedReport));
+  try {
+    const outputReport = JSON.stringify(preprocessedReport);
+    fs.writeFileSync('auditors-report.json', outputReport, 'utf8');
+  } catch (e) {
+    log.warn(e);
+  }
 };
 
 (async () => {
