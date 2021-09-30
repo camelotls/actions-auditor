@@ -104,7 +104,7 @@ jobs:
         with:
           JIRA_USER: ${{ secrets.JIRA_USER }}
           JIRA_PASSWORD: ${{ secrets.JIRA_PASSWORD }}
-          INPUT_JSON: ${{ steps.npm_audit.outputs.auditReport }}
+          INPUT_JSON: "./auditors-report.json"
           JIRA_PROJECT: ${{ env.JIRA_PROJECT }}
           JIRA_URI: ${{ env.JIRA_URI }}
           REPORT_INPUT_KEYS: |
