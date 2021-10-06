@@ -26,9 +26,9 @@ jobs:
           npm i
           npm audit --production --json > audit.json
 
-      - name: Checkout Action Auditor
-        if: always()
-        uses: actions/checkout@v2
+#      - name: Checkout Action Auditor
+#        if: always()
+#        uses: actions/checkout@v2
 
       - name: Upload NPM audit report to GH Artifact
         if: always()
