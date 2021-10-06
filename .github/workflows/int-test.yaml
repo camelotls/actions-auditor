@@ -6,41 +6,25 @@ on:
 
 
 jobs:
-  cleanup:
-    name: "Cleanup workspace"
-    runs-on: aws-core-runner
-    steps:
-      - name: Cleanup workspace
-        run: |
-          echo "Cleaning up previous run"
-          rm -rf "${{ github.workspace }}"
-
   int-test-npm-audit:
-    needs: [cleanup]
     name: "Integration Test of NPM Audit Report"
-    runs-on: aws-core-runner
+    runs-on: ubuntu-latest
     steps:
-      - name: Use Node.js 12.x
+      - name: Use Node.js 14.x
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 14.x
 
-      - name: Checkout ILL Mobile App Repo
+      - name: Checkout Sample npm repo
         uses: actions/checkout@v2
         with:
-          repository: camelotls/il-excalibur-mobile-app
-          token: ${{ secrets.MACHINEUSER_GITHUB_TOKEN }}
-          path: il-excalibur-mobile-app
-
-      - name: Prepare files
-        run: |
-          pwd
-          cd il-excalibur-mobile-app
-          cp build/package.template.json ./package.json
+          repository: pmegremis/sample-node-app
 
       - name: Run npm audit
         if: always()
-        run: sh ./ci/scripts/npm-audit-failover.sh
+        run: |
+          npm i
+          npm audit --production --json > audit.json
 
       - name: Checkout Action Auditor
         uses: actions/checkout@v2
