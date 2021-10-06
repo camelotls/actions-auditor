@@ -1,0 +1,71 @@
+name: Integration Tests
+
+on:
+#  pull_request:
+push:
+
+jobs:
+  int-test-npm-audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: Checkout ILL Mobile App Repo
+        uses: actions/checkout@v2
+        with:
+          repository: camelotls/il-excalibur-mobile-app
+          token: ${{ secrets.MACHINEUSER_GITHUB_TOKEN }}
+          path: il-excalibur-mobile-app
+
+      - name: Prepare files
+        run: |
+          pwd
+          cd il-excalibur-mobile-app
+          cp build/package.template.json ./package.json
+
+      - name: Run npm audit
+        if: always()
+        run: sh ./ci/scripts/npm-audit-failover.sh
+
+      - name: Checkout Action Auditor
+        uses: actions/checkout@v2
+
+      - name: Upload NPM audit report to GH Artifact
+        if: always()
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: "NPM_Audit_Mobile_Report.zip"
+          path: |
+              ./audit.json
+
+#      - name: Integration Test NPM Audit
+#        uses: ./actions-nowsecure/.github/actions/schema-validator
+#        with:
+#          MACHINEUSER_GITHUB_TOKEN: ${{ secrets.MACHINEUSER_GITHUB_TOKEN }}
+#          INPUT_DATA: ${{ steps.nowsecure_action.outputs.nowsecureReportData }}
+
+#  int-test-owasp-zap:
+#   runs-on: ubuntu-latest
+#   env:
+#     ID: extra
+#   steps:
+#     - name: Checkout Actions Auditor
+#       uses: actions/checkout@v2
+#       with:
+#         path: ./actions-auditor/
+#
+#     - name: Use Node.js 12.x
+#       uses: actions/setup-node@v1
+#       with:
+#         node-version: 12.x
+#
+#
+#     - name: Integration Test Extra Schema
+#       uses: ./actions-nowsecure/.github/actions/schema-validator
+#       with:
+#         MACHINEUSER_GITHUB_TOKEN: ${{ secrets.MACHINEUSER_GITHUB_TOKEN }}
+#         INPUT_DATA: ${{ steps.nowsecure_action.outputs.nowsecureReportData }}
