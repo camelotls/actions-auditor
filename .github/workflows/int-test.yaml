@@ -7,7 +7,7 @@ on:
 
 jobs:
   int-test-npm-audit:
-    runs-on: ubuntu-latest
+    runs-on: aws-core-runner
 
     steps:
       - name: Use Node.js 12.x
