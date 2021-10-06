@@ -6,9 +6,19 @@ on:
 
 
 jobs:
-  int-test-npm-audit:
+  cleanup:
+    name: "Cleanup workspace"
     runs-on: aws-core-runner
+    steps:
+      - name: Cleanup workspace
+        run: |
+          echo "Cleaning up previous run"
+          rm -rf "${{ github.workspace }}"
 
+  int-test-npm-audit:
+    needs: [cleanup]
+    name: "Integration Test of NPM Audit Report"
+    runs-on: aws-core-runner
     steps:
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
