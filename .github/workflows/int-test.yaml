@@ -32,7 +32,7 @@ jobs:
 
       - name: Copy npm report to Auditor repo
         if: always()
-        run: cp ./audit.json ./actions-auditor/
+        run: cp ./pmegremis/sample-node-app/audit.json ./actions-auditor/
 
       - name: Audit checker
         if: always()
