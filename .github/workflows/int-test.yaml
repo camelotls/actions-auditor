@@ -9,6 +9,8 @@ jobs:
   int-test-npm-audit:
     name: "Integration Test of NPM Audit Report"
     runs-on: ubuntu-latest
+    env:
+      ID: npm
     steps:
       - name: Use Node.js 14.x
         uses: actions/setup-node@v1
@@ -56,13 +58,13 @@ jobs:
       - name: Audit checker
         if: always()
         id: npm_audit
-        uses: ./actions-auditor/
+        uses: ./
         with:
          REPORT_INPUT: "./artifact/report/audit.json"
          AUDIT_TOOL: "npm"
 
       - name: Integration Test NPM Audit
-        uses: ./actions-nowsecure/.github/actions/schema-validator
+        uses: ./actions-auditor/.github/actions/schema-validator
         with:
           INPUT_DATA: "./actions-auditor/auditors-report.json"
 
