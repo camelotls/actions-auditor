@@ -25,6 +25,7 @@ jobs:
         run: |
           npm i
           npm audit --production --json > audit.json
+          ls
 
       - name: Checkout Action Auditor
         if: always()
@@ -32,7 +33,9 @@ jobs:
 
       - name: Copy npm report to Auditor repo
         if: always()
-        run: cp ./pmegremis/sample-node-app/audit.json ./actions-auditor/
+        run: |
+          pwd
+        cp ./pmegremis/sample-node-app/audit.json ./actions-auditor/
 
       - name: Audit checker
         if: always()
