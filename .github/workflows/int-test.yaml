@@ -64,9 +64,10 @@ jobs:
          AUDIT_TOOL: "npm"
 
       - name: Integration Test NPM Audit
-        uses: ./actions-auditor/.github/actions/schema-validator
+        if: always()
+        uses: ./.github/actions/schema-validator
         with:
-          INPUT_DATA: "./actions-auditor/auditors-report.json"
+          INPUT_DATA: "./auditors-report.json"
 
 #  int-test-owasp-zap:
 #   runs-on: ubuntu-latest
