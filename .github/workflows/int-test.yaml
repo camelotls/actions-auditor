@@ -51,15 +51,14 @@ jobs:
       - name: Copy npm report to Auditor repo
         if: always()
         run: |
-          pwd
-          cp ./artifact/report/audit.json ./actions-auditor/
+          ls
 
       - name: Audit checker
         if: always()
         id: npm_audit
         uses: ./actions-auditor/
         with:
-         REPORT_INPUT: "./actions-auditor/audit.json"
+         REPORT_INPUT: "./artifact/report/audit.json"
          AUDIT_TOOL: "npm"
 
       - name: Integration Test NPM Audit
