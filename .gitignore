@@ -10,5 +10,5 @@ node_modules/
 #.DS_Store
 .DS_Store
 
-.github/actions/
+.github/actions/schema-validator/node_modules
 
