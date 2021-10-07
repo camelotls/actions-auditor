@@ -1,7 +1,7 @@
 const npmAuditSchema = {
   type: 'object',
   patternProperties: {
-    '^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}$': {
+    '^[0-9]{3}$': {
       type: 'object',
       properties: {
         findings: {
@@ -164,8 +164,86 @@ const npmAuditSchema = {
   required: true,
   additionalProperties: false,
   id: 'npm'
+};
+
+const owaspAuditSchema = {
+  type: 'object',
+  patternProperties: {
+    '^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}$': {
+  type: 'object',
+      properties: {
+    name: {
+      type: 'string'
+    },
+    desc: {
+      type: 'string'
+    },
+    uri: {
+      type: 'array',
+          items: [
+        {
+          type: 'string'
+        },
+        {
+          type: 'string'
+        },
+        {
+          type: 'string'
+        },
+        {
+          type: 'string'
+        },
+        {
+          type: 'string'
+        },
+        {
+          type: 'string'
+        },
+        {
+          type: 'string'
+        },
+        {
+          type: 'string'
+        },
+        {
+          type: 'string'
+        },
+        {
+          type: 'string'
+        },
+        {
+          type: 'string'
+        },
+        {
+          type: 'string'
+        }
+      ]
+    },
+    riskdesc: {
+      type: 'string'
+    },
+    reference: {
+      type: 'string'
+    },
+    solution: {
+      type: 'string'
+    }
+  },
+  required: [
+    'name',
+    'desc',
+    'uri',
+    'riskdesc',
+    'reference',
+    'solution'
+  ]
 }
+},
+  required: true,
+  additionalProperties: false,
+  id: 'owasp'
+};
 
 
 
-module.exports = { npmAuditSchema };
+module.exports = { npmAuditSchema, owaspAuditSchema };
