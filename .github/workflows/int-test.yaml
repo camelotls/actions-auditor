@@ -42,6 +42,12 @@ jobs:
         if: always()
         uses: actions/checkout@v2
 
+      - name: Download auditor report
+        if: always()
+        uses: actions/download-artifact@v2
+        with:
+          path: artifact
+
       - name: Copy npm report to Auditor repo
         if: always()
         run: |
