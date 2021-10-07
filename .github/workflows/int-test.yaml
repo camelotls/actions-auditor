@@ -46,7 +46,7 @@ jobs:
         if: always()
         run: |
           pwd
-          cp ./home/runner/work/pmegremis/sample-node-app/audit.json ./actions-auditor/
+          cp ./home/runner/work/actions-auditor/actions-auditor/pmegremis/sample-node-app/audit.json ./actions-auditor/
 #
 #      - name: Audit checker
 #        if: always()
