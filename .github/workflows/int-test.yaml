@@ -25,30 +25,33 @@ jobs:
         run: |
           npm i
           npm audit --production --json > audit.json
-          ls
 
-      - name: Checkout Action Auditor
-        if: always()
-        uses: actions/checkout@v2
+     - name: Run ls command
+       if: always()
+       run: ls
 
-      - name: Copy npm report to Auditor repo
-        if: always()
-        run: |
-          pwd
-          cp ./pmegremis/sample-node-app/audit.json ./actions-auditor/
-
-      - name: Audit checker
-        if: always()
-        id: npm_audit
-        uses: ./actions-auditor/
-        with:
-         REPORT_INPUT: "./actions-auditor/audit.json"
-         AUDIT_TOOL: "npm"
-
-      - name: Integration Test NPM Audit
-        uses: ./actions-nowsecure/.github/actions/schema-validator
-        with:
-          INPUT_DATA: "./actions-auditor/auditors-report.json"
+#      - name: Checkout Action Auditor
+#        if: always()
+#        uses: actions/checkout@v2
+#
+#      - name: Copy npm report to Auditor repo
+#        if: always()
+#        run: |
+#          pwd
+#          cp ./pmegremis/sample-node-app/audit.json ./actions-auditor/
+#
+#      - name: Audit checker
+#        if: always()
+#        id: npm_audit
+#        uses: ./actions-auditor/
+#        with:
+#         REPORT_INPUT: "./actions-auditor/audit.json"
+#         AUDIT_TOOL: "npm"
+#
+#      - name: Integration Test NPM Audit
+#        uses: ./actions-nowsecure/.github/actions/schema-validator
+#        with:
+#          INPUT_DATA: "./actions-auditor/auditors-report.json"
 
 #  int-test-owasp-zap:
 #   runs-on: ubuntu-latest
