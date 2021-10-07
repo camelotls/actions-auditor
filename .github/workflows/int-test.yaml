@@ -26,9 +26,9 @@ jobs:
           npm i
           npm audit --production --json > audit.json
 
-     - name: Run ls command
-       if: always()
-       run: ls
+      - name: Run ls command
+        if: always()
+        run: ls
 
 #      - name: Checkout Action Auditor
 #        if: always()
