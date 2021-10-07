@@ -20,6 +20,10 @@ jobs:
         with:
           repository: pmegremis/sample-node-app
 
+     - name: Check pwd for sample node app
+       if: always()
+       run: pwd
+
       - name: Run npm audit
         if: always()
         run: |
@@ -38,11 +42,11 @@ jobs:
         if: always()
         run: pwd
 
-#      - name: Copy npm report to Auditor repo
-#        if: always()
-#        run: |
-#          pwd
-#          cp ./pmegremis/sample-node-app/audit.json ./actions-auditor/
+      - name: Copy npm report to Auditor repo
+        if: always()
+        run: |
+          pwd
+          cp ./home/runner/work/pmegremis/sample-node-app/audit.json ./actions-auditor/
 #
 #      - name: Audit checker
 #        if: always()
