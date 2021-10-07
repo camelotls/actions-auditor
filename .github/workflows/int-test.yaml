@@ -34,7 +34,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v2.2.4
         with:
-          name: "NPM_Audit_Mobile_Report.zip"
+          name: report
           path: |
               ./audit.json
 
@@ -46,7 +46,7 @@ jobs:
         if: always()
         run: |
           pwd
-          cp ./audit.json ./actions-auditor/
+          cp ./artifact/report/audit.json ./actions-auditor/
 
       - name: Audit checker
         if: always()
