@@ -32,21 +32,23 @@ jobs:
 
       - name: Run ls command
         if: always()
-        run: ls
-
-      - name: Checkout Action Auditor
-        if: always()
-        uses: actions/checkout@v2
-
-      - name: Run ls command
-        if: always()
-        run: ls
-
-      - name: Copy npm report to Auditor repo
-        if: always()
         run: |
-          pwd
-          cp home/runner/work/actions-auditor/actions-auditor/audit.json ./actions-auditor/
+         ls
+         pwd
+
+#      - name: Checkout Action Auditor
+#        if: always()
+#        uses: actions/checkout@v2
+#
+#      - name: Run ls command
+#        if: always()
+#        run: ls
+#
+#      - name: Copy npm report to Auditor repo
+#        if: always()
+#        run: |
+#          pwd
+#          cp home/runner/work/actions-auditor/actions-auditor/audit.json ./actions-auditor/
 #
 #      - name: Audit checker
 #        if: always()
