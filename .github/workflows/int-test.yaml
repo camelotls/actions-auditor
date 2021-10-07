@@ -20,9 +20,9 @@ jobs:
         with:
           repository: pmegremis/sample-node-app
 
-     - name: Check pwd for sample node app
-       if: always()
-       run: pwd
+      - name: Check pwd for sample node app
+        if: always()
+        run: pwd
 
       - name: Run npm audit
         if: always()
