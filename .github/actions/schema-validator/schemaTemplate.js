@@ -1,7 +1,7 @@
 const npmAuditSchema = {
   type: 'object',
   patternProperties: {
-    '^[0-9]{3}$': {
+    '^[0-9]*$': {
       type: 'object',
       properties: {
         findings: {
