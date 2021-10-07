@@ -26,23 +26,26 @@ jobs:
           npm i
           npm audit --production --json > audit.json
 
-#      - name: Checkout Action Auditor
-#        if: always()
-#        uses: actions/checkout@v2
-
-      - name: Upload NPM audit report to GH Artifact
+      - name: Checkout Action Auditor
         if: always()
-        uses: actions/upload-artifact@v2.2.4
-        with:
-          name: "NPM_Audit_Mobile_Report.zip"
-          path: |
-              ./audit.json
+        uses: actions/checkout@v2
 
-#      - name: Integration Test NPM Audit
-#        uses: ./actions-nowsecure/.github/actions/schema-validator
-#        with:
-#          MACHINEUSER_GITHUB_TOKEN: ${{ secrets.MACHINEUSER_GITHUB_TOKEN }}
-#          INPUT_DATA: ${{ steps.nowsecure_action.outputs.nowsecureReportData }}
+      - name: Copy npm report to Auditor repo
+        if: always()
+        run: cp ./audit.json ./actions-auditor/
+
+      - name: Audit checker
+        if: always()
+        id: npm_audit
+        uses: ./actions-auditor/
+        with:
+         REPORT_INPUT: "./actions-auditor/audit.json"
+         AUDIT_TOOL: "npm"
+
+      - name: Integration Test NPM Audit
+        uses: ./actions-nowsecure/.github/actions/schema-validator
+        with:
+          INPUT_DATA: "./actions-auditor/auditors-report.json"
 
 #  int-test-owasp-zap:
 #   runs-on: ubuntu-latest
