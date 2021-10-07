@@ -46,7 +46,7 @@ jobs:
         if: always()
         run: |
           pwd
-          cp ./artifact/report/audit.json ./actions-auditor/
+          cp ./artifacts/report/audit.json ./actions-auditor/
 
       - name: Audit checker
         if: always()
