@@ -65,7 +65,6 @@ jobs:
    env:
      ID: owasp
    steps:
-
      - name: ZAP Active Scan
        uses: zaproxy/action-baseline@master
        with:
@@ -83,7 +82,7 @@ jobs:
          path: |
              ./report_json.json
 
-     - name: Checkout Actions Auditor
+     - name: Checkout actions-auditor
        uses: actions/checkout@v2
        with:
          path: ./actions-auditor/
@@ -94,12 +93,17 @@ jobs:
        with:
          path: artifact
 
-     - name: Audit checker
+    - name: Run commands
+      run: |
+        ls
+        pwd
+
+     - name: Run actions-auditor
        if: always()
        id: owasp_audit
        uses: ./
        with:
-         REPORT_INPUT: "./artifact/report/audit.json"
+         REPORT_INPUT: "./artifact/report/report_json.json"
          AUDIT_TOOL: "owasp"
 
      - name: Integration Test OWASP Audit
