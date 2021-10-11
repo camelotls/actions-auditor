@@ -102,9 +102,9 @@ jobs:
 
      - name: Integration Test OWASP Audit
        if: always()
-       uses: ./.github/actions/schema-validator
+       uses: ./actions-auditor/.github/actions/schema-validator
        with:
-         INPUT_DATA: "./auditors-report.json"
+         INPUT_DATA: "auditors-report.json"
 
 
 
