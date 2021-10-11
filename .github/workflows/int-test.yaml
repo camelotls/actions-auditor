@@ -101,7 +101,7 @@ jobs:
      - name: Run actions-auditor
        if: always()
        id: owasp_audit
-       uses: ./
+       uses: ./actions-auditor
        with:
          REPORT_INPUT: "./artifact/report/report_json.json"
          AUDIT_TOOL: "owasp"
