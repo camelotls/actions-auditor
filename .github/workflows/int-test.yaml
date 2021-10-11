@@ -68,7 +68,7 @@ jobs:
           target: "https://www.saucedemo.com/"
           docker_name: "owasp/zap2docker-stable:latest"
 
-      - name: Remove OWASP Basic Scan Docker Container
+      - name: Remove OWASP Scan Docker Container
         if: always()
         run: docker rm $(docker ps --filter status=exited -q)
 
