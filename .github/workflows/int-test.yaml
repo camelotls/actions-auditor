@@ -87,12 +87,6 @@ jobs:
        with:
          path: ./actions-auditor/
 
-     - name: Download auditor report
-       if: always()
-       uses: actions/download-artifact@v2
-       with:
-         path: artifact
-
      - name: Run commands
        run: |
          ls
@@ -103,7 +97,7 @@ jobs:
        id: owasp_audit
        uses: ./actions-auditor
        with:
-         REPORT_INPUT: "./artifact/report/report_json.json"
+         REPORT_INPUT: "report_json.json"
          AUDIT_TOOL: "owasp"
 
      - name: Integration Test OWASP Audit
