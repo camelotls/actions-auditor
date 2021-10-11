@@ -96,11 +96,11 @@ jobs:
 
      - name: Audit checker
        if: always()
-         id: owasp_audit
-         uses: ./
-         with:
-           REPORT_INPUT: "./artifact/report/audit.json"
-           AUDIT_TOOL: "owasp"
+       id: owasp_audit
+       uses: ./
+       with:
+         REPORT_INPUT: "./artifact/report/audit.json"
+         AUDIT_TOOL: "owasp"
 
      - name: Integration Test OWASP Audit
        if: always()
