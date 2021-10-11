@@ -59,9 +59,9 @@ jobs:
           INPUT_DATA: "./auditors-report.json"
 
   int-test-owasp-zap:
-  name: "Integration Test of OWASP Audit Report"
-   runs-on: ubuntu-latest
-   env:
+    name: "Integration Test of OWASP Audit Report"
+    runs-on: ubuntu-latest
+    env:
      ID: owasp
    steps:
      - name: OWASP Basic Scan
