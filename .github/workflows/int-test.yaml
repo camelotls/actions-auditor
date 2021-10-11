@@ -63,42 +63,42 @@ jobs:
     runs-on: ubuntu-latest
     env:
      ID: owasp
-   steps:
-     - name: OWASP Basic Scan
-       uses: zaproxy/action-baseline@master
-       with:
-         target: "https://www.saucedemo.com/"
-         docker_name: "owasp/zap2docker-stable:latest"
+    steps:
+      - name: OWASP Basic Scan
+        uses: zaproxy/action-baseline@master
+        with:
+          target: "https://www.saucedemo.com/"
+          docker_name: "owasp/zap2docker-stable:latest"
 
-     - name: Remove OWASP Basic Scan Docker Container
-       if: always()
-       run: docker rm $(docker ps --filter status=exited -q)
+      - name: Remove OWASP Basic Scan Docker Container
+        if: always()
+        run: docker rm $(docker ps --filter status=exited -q)
 
-     - name: Upload Security Report to GH Artifact
-       uses: actions/upload-artifact@v2.2.4
-       with:
-         name: "Security_Report.zip"
-         path: |
+      - name: Upload Security Report to GH Artifact
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: "Security_Report.zip"
+          path: |
              ./report_json.json
 
-     - name: Checkout actions-auditor
-       uses: actions/checkout@v2
-       with:
-         path: ./actions-auditor/
+      - name: Checkout actions-auditor
+        uses: actions/checkout@v2
+        with:
+          path: ./actions-auditor/
 
-     - name: Run actions-auditor
-       if: always()
-       id: owasp_audit
-       uses: ./actions-auditor
-       with:
-         REPORT_INPUT: "report_json.json"
-         AUDIT_TOOL: "owasp"
+      - name: Run actions-auditor
+        if: always()
+        id: owasp_audit
+        uses: ./actions-auditor
+        with:
+          REPORT_INPUT: "report_json.json"
+          AUDIT_TOOL: "owasp"
 
-     - name: Integration Test OWASP Audit
-       if: always()
-       uses: ./actions-auditor/.github/actions/schema-validator
-       with:
-         INPUT_DATA: "auditors-report.json"
+      - name: Integration Test OWASP Audit
+        if: always()
+        uses: ./actions-auditor/.github/actions/schema-validator
+        with:
+          INPUT_DATA: "auditors-report.json"
 
 
 
