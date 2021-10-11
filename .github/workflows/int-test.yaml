@@ -24,9 +24,7 @@ jobs:
 
       - name: Run npm audit
         if: always()
-        run: |
-          npm i
-          npm audit --production --json > audit.json
+        run: sh npm-audit-failover.sh
 
       - name: Upload NPM audit report to GH Artifact
         if: always()
@@ -36,7 +34,7 @@ jobs:
           path: |
               ./audit.json
 
-      - name: Checkout Action Auditor
+      - name: Checkout actions-auditor
         if: always()
         uses: actions/checkout@v2
 
@@ -46,7 +44,7 @@ jobs:
         with:
           path: artifact
 
-      - name: Audit checker
+      - name: Run actions-auditor
         if: always()
         id: npm_audit
         uses: ./
@@ -61,17 +59,18 @@ jobs:
           INPUT_DATA: "./auditors-report.json"
 
   int-test-owasp-zap:
+  name: "Integration Test of OWASP Audit Report"
    runs-on: ubuntu-latest
    env:
      ID: owasp
    steps:
-     - name: ZAP Active Scan
+     - name: OWASP Basic Scan
        uses: zaproxy/action-baseline@master
        with:
          target: "https://www.saucedemo.com/"
          docker_name: "owasp/zap2docker-stable:latest"
 
-     - name: Remove Active Scan Docker Container
+     - name: Remove OWASP Basic Scan Docker Container
        if: always()
        run: docker rm $(docker ps --filter status=exited -q)
 
@@ -86,11 +85,6 @@ jobs:
        uses: actions/checkout@v2
        with:
          path: ./actions-auditor/
-
-     - name: Run commands
-       run: |
-         ls
-         pwd
 
      - name: Run actions-auditor
        if: always()
