@@ -22,10 +22,6 @@ jobs:
         with:
           repository: pmegremis/sample-node-app
 
-      - name: Check pwd for sample node app
-        if: always()
-        run: pwd
-
       - name: Run npm audit
         if: always()
         run: |
@@ -49,11 +45,6 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           path: artifact
-
-      - name: Copy npm report to Auditor repo
-        if: always()
-        run: |
-          ls
 
       - name: Audit checker
         if: always()
