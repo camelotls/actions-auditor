@@ -1,9 +1,7 @@
 name: Integration Tests
 
 on:
-  push:
-#  pull_request:
-
+   pull_request:
 
 jobs:
   int-test-npm-audit:
@@ -26,7 +24,7 @@ jobs:
         if: always()
         run: sh npm-audit-failover.sh
 
-      - name: Upload NPM audit report to GH Artifact
+      - name: Upload npm audit report to GH Artifact
         if: always()
         uses: actions/upload-artifact@v2.2.4
         with:
@@ -38,7 +36,7 @@ jobs:
         if: always()
         uses: actions/checkout@v2
 
-      - name: Download auditor report
+      - name: Download npm audit report from artifact
         if: always()
         uses: actions/download-artifact@v2
         with:
