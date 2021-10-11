@@ -60,24 +60,55 @@ jobs:
         with:
           INPUT_DATA: "./auditors-report.json"
 
-#  int-test-owasp-zap:
-#   runs-on: ubuntu-latest
-#   env:
-#     ID: extra
-#   steps:
-#     - name: Checkout Actions Auditor
-#       uses: actions/checkout@v2
-#       with:
-#         path: ./actions-auditor/
-#
-#     - name: Use Node.js 12.x
-#       uses: actions/setup-node@v1
-#       with:
-#         node-version: 12.x
-#
-#
-#     - name: Integration Test Extra Schema
-#       uses: ./actions-nowsecure/.github/actions/schema-validator
-#       with:
-#         MACHINEUSER_GITHUB_TOKEN: ${{ secrets.MACHINEUSER_GITHUB_TOKEN }}
-#         INPUT_DATA: ${{ steps.nowsecure_action.outputs.nowsecureReportData }}
+  int-test-owasp-zap:
+   runs-on: ubuntu-latest
+   env:
+     ID: owasp
+   steps:
+
+     - name: ZAP Active Scan
+       uses: zaproxy/action-baseline@master
+       with:
+         target: "https://www.saucedemo.com/"
+         docker_name: "owasp/zap2docker-stable:latest"
+
+     - name: Remove Active Scan Docker Container
+       if: always()
+       run: docker rm $(docker ps --filter status=exited -q)
+
+     - name: Upload Security Report to GH Artifact
+       uses: actions/upload-artifact@v2.2.4
+       with:
+         name: "Security_Report.zip"
+         path: |
+             ./report_json.json
+
+     - name: Checkout Actions Auditor
+       uses: actions/checkout@v2
+       with:
+         path: ./actions-auditor/
+
+     - name: Download auditor report
+       if: always()
+       uses: actions/download-artifact@v2
+       with:
+         path: artifact
+
+     - name: Audit checker
+       if: always()
+         id: owasp_audit
+         uses: ./
+         with:
+           REPORT_INPUT: "./artifact/report/audit.json"
+           AUDIT_TOOL: "owasp"
+
+     - name: Integration Test OWASP Audit
+       if: always()
+       uses: ./.github/actions/schema-validator
+       with:
+         INPUT_DATA: "./auditors-report.json"
+
+
+
+
+
