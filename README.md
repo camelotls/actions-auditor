@@ -4,6 +4,7 @@
 ![Build Status](https://github.com/camelotls/actions-auditor/workflows/Lint%20Code%20Base/badge.svg)
 ![Build Status](https://github.com/camelotls/actions-auditor/workflows/ESLinter/badge.svg)
 ![Build Status](https://github.com/camelotls/actions-auditor/workflows/CodeQL/badge.svg)
+![Build Status](https://github.com/camelotls/actions-auditor/workflows/Int%20Tests/badge.svg)
 
 ## Action description
 This action receives a report in JSON format and process it.

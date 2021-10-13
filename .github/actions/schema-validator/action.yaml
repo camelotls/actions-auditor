@@ -1,0 +1,8 @@
+name: "Schema Validator"
+description: "Validate the Schema of NPM & OWASP-ZAP Report"
+inputs:
+  INPUT_DATA:
+    description: "JSON report from audit tool"
+runs:
+  using: "docker"
+  image: "Dockerfile"

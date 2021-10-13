@@ -1,0 +1,102 @@
+name: Int Tests
+
+on:
+   pull_request:
+
+jobs:
+  int-test-npm-audit:
+    name: "Integration Test of NPM Audit Report"
+    runs-on: ubuntu-latest
+    env:
+      ID: npm
+    steps:
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+
+      - name: Checkout Sample npm repo
+        uses: actions/checkout@v2
+        with:
+          repository: pmegremis/sample-node-app
+
+      - name: Run npm audit
+        if: always()
+        run: sh npm-audit-failover.sh
+
+      - name: Upload npm audit report to GH Artifact
+        if: always()
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: report
+          path: |
+              ./audit.json
+
+      - name: Checkout actions-auditor
+        if: always()
+        uses: actions/checkout@v2
+
+      - name: Download npm audit report from artifact
+        if: always()
+        uses: actions/download-artifact@v2
+        with:
+          path: artifact
+
+      - name: Run actions-auditor
+        if: always()
+        id: npm_audit
+        uses: ./
+        with:
+         REPORT_INPUT: "./artifact/report/audit.json"
+         AUDIT_TOOL: "npm"
+
+      - name: Integration Test NPM Audit
+        if: always()
+        uses: ./.github/actions/schema-validator
+        with:
+          INPUT_DATA: "./auditors-report.json"
+
+  int-test-owasp-zap:
+    name: "Integration Test of OWASP Audit Report"
+    runs-on: ubuntu-latest
+    env:
+     ID: owasp
+    steps:
+      - name: OWASP Basic Scan
+        uses: zaproxy/action-baseline@master
+        with:
+          target: "https://www.saucedemo.com/"
+          docker_name: "owasp/zap2docker-stable:latest"
+
+      - name: Remove OWASP Scan Docker Container
+        if: always()
+        run: docker rm $(docker ps --filter status=exited -q)
+
+      - name: Upload Security Report to GH Artifact
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: "Security_Report.zip"
+          path: |
+             ./report_json.json
+
+      - name: Checkout actions-auditor
+        uses: actions/checkout@v2
+        with:
+          path: ./actions-auditor/
+
+      - name: Run actions-auditor
+        if: always()
+        id: owasp_audit
+        uses: ./actions-auditor
+        with:
+          REPORT_INPUT: "report_json.json"
+          AUDIT_TOOL: "owasp"
+
+      - name: Integration Test OWASP Audit
+        if: always()
+        uses: ./actions-auditor/.github/actions/schema-validator
+        with:
+          INPUT_DATA: "auditors-report.json"
+
+
+
