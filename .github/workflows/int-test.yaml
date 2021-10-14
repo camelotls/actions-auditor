@@ -67,6 +67,7 @@ jobs:
         with:
           target: "https://www.saucedemo.com/"
           docker_name: "owasp/zap2docker-stable:latest"
+          allow_issue_writing: false
 
       - name: Remove OWASP Scan Docker Container
         if: always()
