@@ -52,7 +52,7 @@ const startAction = () => {
       });
       break;
     case AUDIT_TOOL_REPORT.npm:
-      preprocessedReport = JSON.parse(tempReportInputFile).vulnerabilities;
+      preprocessedReport = JSON.parse(tempReportInputFile).advisories;
   }
   try {
     const outputReport = JSON.stringify(preprocessedReport);
