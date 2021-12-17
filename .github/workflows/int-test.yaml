@@ -45,9 +45,9 @@ jobs:
       - name: Run actions-auditor
         if: always()
         id: npm_audit
-        uses: ./actions-auditor
+        uses: ./
         with:
-         REPORT_INPUT: "audit.json"
+         REPORT_INPUT: "./artifact/report/audit.json"
          AUDIT_TOOL: "npm"
 
       - name: Integration Test NPM Audit
