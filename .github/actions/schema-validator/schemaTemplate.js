@@ -1,118 +1,58 @@
 const npmAuditSchema = {
   type: 'object',
   patternProperties: {
-    '^[0-9]*$': {
+    '^[0-9A-Za-z\s\-]+$': {
       type: 'object',
       properties: {
-        findings: {
-          type: 'array',
-          items: [{
-            type: 'object',
-            properties: {
-              version: {
-                type: 'string'
-              },
-              paths: {
-                type: 'array',
-                items: [{
-                  type: 'string'
-                }]
-              }
-            },
-            required: [
-              'version',
-              'paths'
-            ]
-          }]
-        },
-        metadata: {
-          type: 'null'
-        },
-        vulnerable_versions: {
-          type: 'string'
-        },
-        module_name: {
+        name: {
           type: 'string'
         },
         severity: {
           type: 'string'
         },
-        github_advisory_id: {
-          type: 'string'
+        isDirect: {
+          type: 'boolean'
         },
-        cves: {
+        via: {
           type: 'array',
-          items: {}
+          items: [
+            {
+              type: ['object', 'string']
+            }
+          ]
         },
-        access: {
+        effects: {
+          type: 'array',
+          items: [
+            {
+              type: 'string'
+            }
+          ]
+        },
+        range: {
           type: 'string'
         },
-        patched_versions: {
-          type: 'string'
+        nodes: {
+          type: 'array',
+          items: [
+            {
+              type: 'string'
+            }
+          ]
         },
-        updated: {
-          type: 'string'
-        },
-        recommendation: {
-          type: 'string'
-        },
-        cwe: {
-          type: 'string'
-        },
-        found_by: {
-          type: 'null'
-        },
-        deleted: {
-          type: 'null'
-        },
-        id: {
-          type: 'integer'
-        },
-        references: {
-          type: 'string'
-        },
-        created: {
-          type: 'string'
-        },
-        reported_by: {
-          type: 'null'
-        },
-        title: {
-          type: 'string'
-        },
-        npm_advisory_id: {
-          type: 'null'
-        },
-        overview: {
-          type: 'string'
-        },
-        url: {
-          type: 'string'
+        fixAvailable: {
+          type: 'boolean'
         }
       },
       required: [
-        'findings',
-        'metadata',
-        'vulnerable_versions',
-        'module_name',
+        'name',
         'severity',
-        'github_advisory_id',
-        'cves',
-        'access',
-        'patched_versions',
-        'updated',
-        'recommendation',
-        'cwe',
-        'found_by',
-        'deleted',
-        'id',
-        'references',
-        'created',
-        'reported_by',
-        'title',
-        'npm_advisory_id',
-        'overview',
-        'url'
+        'isDirect',
+        'via',
+        'effects',
+        'range',
+        'nodes',
+        'fixAvailable'
       ]
     }
   },
